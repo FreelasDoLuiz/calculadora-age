@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/newwhite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content, maximum-scale=1, user-scalable=0">
+    <title>Orçamento AGE</title>
+  </head>
+  <body>
+    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script type="text/babel">
+      ReactDOM.render(
+        <form name="contact" method="post">
+          <input type="hidden" name="form-name" value="contact" />
+          <p>
+            <label>Nome: <input type="text" name="name" /></label>
+          </p>
+          <p>
+            <label>Nome: <input type="text" name="nome" /></label>
+          </p>
+          <p>
+            <label>Email: <input type="text" name="email" /></label>
+          </p>
+          <p>
+            <label>WhatsApp: <input type="text" name="whatsapp" /></label>
+          </p>
+          <p>
+            <label>Tem propriedade? <input type="text" name="temPropriedade" /></label>
+          </p>
+          <p>
+            <label>Metros da propriedade: <input type="text" name="metrosDaPropriedade" /></label>
+          </p>
+          <p>
+            <label>Bairro de construção: <input type="text" name="bairroDeConstrucao" /></label>
+          </p>
+          <p>
+            <label>Tem projeto? <input type="checkbox" name="temProjeto" /></label>
+          </p>
+          <p>
+            <label>Suite Master: <input type="text" name="suiteMaster" /></label>
+          </p>
+          <p>
+            <label>Suite: <input type="text" name="suite" /></label>
+          </p>
+          <p>
+            <label>Quarto: <input type="text" name="quarto" /></label>
+          </p>
+          <p>
+            <label>Sala de Estar: <input type="text" name="salaDeEstar" /></label>
+          </p>
+          <p>
+            <label>Escritório: <input type="text" name="escritorio" /></label>
+          </p>
+          <p>
+            <label>Cozinha: <input type="text" name="cozinha" /></label>
+          </p>
+          <p>
+            <label>Sala de Jantar: <input type="text" name="salaDeJantar" /></label>
+          </p>
+          <p>
+            <label>Lavabo: <input type="text" name="lavabo" /></label>
+          </p>
+          <p>
+            <label>Home: <input type="text" name="home" /></label>
+          </p>
+          <p>
+            <label>Área Gourmet: <input type="text" name="areaGourmet" /></label>
+          </p>
+          <p>
+            <label>Garagem Coberta: <input type="text" name="garagemCoberta" /></label>
+          </p>
+          <p>
+            <label>Roupeiro: <input type="text" name="roupeiro" /></label>
+          </p>
+          <p>
+            <label>Depósito: <input type="text" name="deposito" /></label>
+          </p>
+          <p>
+            <label>Piscina: <input type="text" name="piscina" /></label>
+          </p>
+          <p>
+            <label>Padrão de Acabamento: <input type="text" name="padraoDeAcabamento" /></label>
+          </p>
+          <p>
+            <label>Tempo para iniciar a obra: <input type="text" name="tempoParaIniciarAObra" /></label>
+          </p>
+          <p>
+            <label>Orçamento disponível: <input type="text" name="orçamentoDisponivel" /></label>
+          </p>
+          <p>
+            <label>Forma de pagamento: <input type="text" name="formaDePagamento" /></label>
+          </p>
+        </form>,
+        document.getElementById("root")
+      );
+
+    </script>
+  </body>
+</html>
