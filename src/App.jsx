@@ -969,13 +969,15 @@ function App() {
                   ) {
                     return setStep((e) => e - 1)
                   } else if (
-                    watchPropValue('tipoImovel') === 'Casa' ||
+                    watchPropValue('tipoImovel') === 'Casa' &&
                     watchPropValue('tipoDeObra') === 'Reforma'
                   ) {
                     return setStep((e) => e - 0.5)
+                  } else if (watchPropValue('tipoImovel') !== 'Casa') {
+                    return setStep((e) => e - 0.5)
                   }
                   return setStep((e) => e - 1)
-                } else if (projectType !== 'Projeto arquitetônico') {
+                } else if (projectType !== 'Projeto Arquitetônico') {
                   return setStep((e) => e - 0.5)
                 }
                 setStep((e) => e - 1)
