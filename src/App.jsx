@@ -581,7 +581,7 @@ function App() {
                 { label: 'Elétrico', value: 'Elétrico' },
                 { label: 'Hidraulico', value: 'Hidraulico' },
                 { label: 'Hidrossanitário', value: 'Hidrossanitário' },
-                { label: 'Águas Plubias', value: 'Águas Plubias' }
+                { label: 'Águas Pluvias', value: 'Águas Pluvias' }
               ]}
               onChange={(e) => {
                 e.length > 0
