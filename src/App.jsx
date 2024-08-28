@@ -55,7 +55,8 @@ const InfoDataSchema = z.object({
 
 const PropDataSchema = z.object({
   tipoDeOrcamento: z.string().min(1, 'Campo obrigatório.'),
-  tipoImovel: z.string().min(1, 'Campo obrigatório.')
+  tipoImovel: z.string().min(1, 'Campo obrigatório.'),
+  tipoDeObra: z.string().min(1, 'Campo obrigatório.')
 })
 
 const haveProjectSchema = z.object({
@@ -83,6 +84,7 @@ const OptionsDataSchema = z.object({
 function App() {
   const [step, setStep] = useState(0)
   const [result, setResult] = useState(0)
+  const [metragemResult, setMetragemResult] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(false)
 
@@ -111,6 +113,7 @@ function App() {
     setValue: setPropValue
   } = useForm({
     defaultValues: {
+      tipoDeObra: '',
       tipoDeOrcamento: '',
       tipoImovel: ''
     },
@@ -222,14 +225,23 @@ function App() {
             : 50
     let result = 0
     let message = ''
-    if (propData.tipoDeOrcamento === 'Projeto arquitetônico') {
-      if (propData.tipoImovel === 'Casa') {
-        result = getOrcamentoArqCasa(amoutData, metragemValue)
+    if (propData.tipoDeOrcamento === 'Projeto Arquitetônico') {
+      if (
+        propData.tipoImovel === 'Casa' &&
+        propData.tipoDeObra === 'Construção'
+      ) {
+        const { metragemTotal, value } = getOrcamentoArqCasa(
+          amoutData,
+          metragemValue
+        )
+        result = value
+        setMetragemResult(metragemTotal)
         message = `
           name: ${infoData.nome}
           email: ${infoData.email}
           whatsapp: ${infoData.whatsapp}
           tipoDeOrçamento: ${propData.tipoDeOrcamento.toString()}
+          tipoDeObra: ${propData.tipoDeObra.toString()}
           tipoDeImóvel: ${propData.tipoImovel.toString()}
           metrosDoProjeto: ${metragremData.metragem}
           suiteMaster: ${amoutData.suiteMaster.toString()}
@@ -257,6 +269,7 @@ function App() {
           whatsapp: ${infoData.whatsapp}
           tipoDeOrçamento: ${propData.tipoDeOrcamento.toString()}
           tipoDeImóvel: ${propData.tipoImovel.toString()}
+          tipoDeObra: ${propData.tipoDeObra.toString()}
           metrosDoProjeto: ${metragremData.metragem}
           tempoParaOProjeto: ${optionsData.tempoParaIniciarAObra}
           orçamento: ${result}
@@ -272,6 +285,7 @@ function App() {
           whatsapp: ${infoData.whatsapp}
           tipoDeOrçamento: ${propData.tipoDeOrcamento.toString()}
           tipoDeImóvel: ${propData.tipoImovel.toString()}
+          tipoDeObra: ${propData.tipoDeObra.toString()}
           metrosDoProjeto: ${metragremData.metragem}
           projetos: ${projectsData.projects}
           suiteMaster: ${amoutData.suiteMaster.toString()}
@@ -293,6 +307,7 @@ function App() {
       `
     }
     setResult(result)
+
     // const encodedData = encode({
     //   'form-name': 'contact',
     //   nome: infoData.nome,
@@ -319,6 +334,11 @@ function App() {
     }
   }
 
+  const shouldShowMetragem =
+    watchPropValue('tipoDeOrcamento') === 'Projeto Arquitetônico' &&
+    watchPropValue('tipoImovel') === 'Casa' &&
+    watchPropValue('tipoDeObra') === 'Construção'
+
   let currentForm
   if (step === 0) {
     currentForm = (
@@ -333,7 +353,7 @@ function App() {
           <img src="./newwhite.svg" alt="logo" className="w-[200px]" />
           <div className="flex flex-col items-center gap-2">
             <h1 className="font-semibold text-center text-2xl text-[#61794a]/90">
-              Calculadora de orçamento de casa no DF
+              Calculadora de orçamento de projetos em 3D
             </h1>
             <p className="font-normal text-[#61794a]/90">
               Tempo de preenchimento: 3 minutos
@@ -425,8 +445,11 @@ function App() {
       >
         <form
           onSubmit={handlePropSubmit(() => {
-            if (projectType === 'Projeto arquitetônico') {
-              if (watchPropValue('tipoImovel') === 'Casa') {
+            if (projectType === 'Projeto Arquitetônico') {
+              if (
+                watchPropValue('tipoImovel') === 'Casa' &&
+                watchPropValue('tipoDeObra') !== 'Reforma'
+              ) {
                 return setStep((e) => e + 1)
               }
               return setStep((e) => e + 1.5)
@@ -448,13 +471,23 @@ function App() {
             />
             <InputSelect
               options={[
+                { label: 'Reforma', value: 'Reforma' },
+                { label: 'Construção', value: 'Construção' }
+              ]}
+              onChange={(e) => setPropValue('tipoDeObra', e)}
+              value={watchPropValue('tipoDeObra')}
+              error={propErrors.tipoDeObra}
+              label="Tipo de obra?"
+            />
+            <InputSelect
+              options={[
                 {
-                  label: 'Projeto arquitetônico',
-                  value: 'Projeto arquitetônico'
+                  label: 'Projeto Arquitetônico',
+                  value: 'Projeto Arquitetônico'
                 },
                 {
-                  label: 'Projeto essencial de engenharia',
-                  value: 'Projeto essencial de engenharia'
+                  label: 'Projeto Essencial de Engenharia',
+                  value: 'Projeto Essencial de Engenharia'
                 }
               ]}
               onChange={(e) => setPropValue('tipoDeOrcamento', e)}
@@ -490,7 +523,7 @@ function App() {
               return setStep((e) => e + 0.2)
             }
             setHaveProjectValue('temProjetoArquitetonico', '')
-            setPropValue('tipoDeOrcamento', 'Projeto arquitetônico')
+            setPropValue('tipoDeOrcamento', 'Projeto Arquitetônico')
             setStep((e) => e - 0.5)
           })}
         >
@@ -505,7 +538,7 @@ function App() {
               }
               value={haveProject}
               error={haveProjectErrors.temProjetoArquitetonico}
-              label="Tem projeto arquitetônico?"
+              label="Tem projeto Arquitetônico?"
             />
           </div>
           {haveProject === 'Não' && (
@@ -584,7 +617,7 @@ function App() {
       <motion.form
         key="step-4"
         onSubmit={handleAmountSubmit(() => {
-          if (projectType === 'Projeto arquitetônico') {
+          if (projectType === 'Projeto Arquitetônico') {
             return setStep((e) => e + 1)
           }
           setStep((e) => e + 0.5)
@@ -600,7 +633,7 @@ function App() {
       >
         <div className="p-4 grid grid-col-1 sm:grid-cols-2 gap-2 sm:overflow-auto sm:max-h-[60vh]">
           <CounterInput
-            title="Suíte Master"
+            title={`Suíte Master ${shouldShowMetragem ? '- 35m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('suiteMaster')}
             onAdd={() => {
@@ -617,7 +650,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Suíte "
+            title={`Suíte ${shouldShowMetragem ? '- 30m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('suite')}
             onAdd={() => {
@@ -634,7 +667,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Quarto "
+            title={`Quarto ${shouldShowMetragem ? '- 16m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('quarto')}
             onAdd={() => {
@@ -651,7 +684,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Sala de estar "
+            title={`Sala de estar ${shouldShowMetragem ? '- 20m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('salaDeEstar')}
             onAdd={() => {
@@ -668,7 +701,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Escritório "
+            title={`Escritório ${shouldShowMetragem ? '- 16m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('escritorio')}
             onAdd={() => {
@@ -685,7 +718,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Cozinha "
+            title={`Cozinha ${shouldShowMetragem ? '- 20m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('cozinha')}
             onAdd={() => {
@@ -702,7 +735,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Sala de jantar "
+            title={`Sala de jantar ${shouldShowMetragem ? '- 20m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('salaDeJantar')}
             onAdd={() => {
@@ -719,7 +752,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Lavabo"
+            title={`Lavabo ${shouldShowMetragem ? '- 3m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('lavabo')}
             onAdd={() => {
@@ -736,7 +769,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Home "
+            title={`Home ${shouldShowMetragem ? '- 16m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('home')}
             onAdd={() => {
@@ -753,7 +786,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Área gourmet "
+            title={`Área gourmet ${shouldShowMetragem ? '- 40m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('areaGourmet')}
             onAdd={() => {
@@ -770,7 +803,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Garagem Coberta "
+            title={`Garagem Coberta ${shouldShowMetragem ? '- 20m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('garagemCoberta')}
             onAdd={() => {
@@ -787,7 +820,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Roupeiro"
+            title={`Roupeiro ${shouldShowMetragem ? '- 5m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('roupeiro')}
             onAdd={() => {
@@ -804,7 +837,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Depósito"
+            title={`Depósito ${shouldShowMetragem ? '- 6m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('deposito')}
             onAdd={() => {
@@ -821,7 +854,7 @@ function App() {
             }}
           />
           <CounterInput
-            title="Piscina "
+            title={`Piscina ${shouldShowMetragem ? '- 40m²' : ''}`}
             subtitle="Quantidade"
             value={watchAmoutValue('piscina')}
             onAdd={() => {
@@ -844,7 +877,7 @@ function App() {
             label="Voltar"
             type="back"
             buttonAction={() => {
-              if (projectType === 'Projeto arquitetônico') {
+              if (projectType === 'Projeto Arquitetônico') {
                 return setStep((e) => e - 1)
               }
               setStep((e) => e - 0.3)
@@ -883,8 +916,11 @@ function App() {
               label="Voltar"
               type="back"
               buttonAction={() => {
-                if (projectType === 'Projeto arquitetônico') {
-                  if (watchPropValue('tipoImovel') === 'Casa') {
+                if (projectType === 'Projeto Arquitetônico') {
+                  if (
+                    watchPropValue('tipoImovel') === 'Casa' &&
+                    watchPropValue('tipoDeObra') !== 'Reforma'
+                  ) {
                     return setStep((e) => e - 0.5)
                   }
                   return setStep((e) => e - 1.5)
@@ -926,8 +962,16 @@ function App() {
               label="Voltar"
               type="back"
               buttonAction={() => {
-                if (projectType === 'Projeto arquitetônico') {
-                  if (watchPropValue('tipoImovel') !== 'Casa') {
+                if (projectType === 'Projeto Arquitetônico') {
+                  if (
+                    watchPropValue('tipoDeObra') === 'Casa' &&
+                    watchPropValue('tipoDeObra') !== 'Reforma'
+                  ) {
+                    return setStep((e) => e - 1)
+                  } else if (
+                    watchPropValue('tipoImovel') === 'Casa' ||
+                    watchPropValue('tipoDeObra') === 'Reforma'
+                  ) {
                     return setStep((e) => e - 0.5)
                   }
                   return setStep((e) => e - 1)
@@ -986,6 +1030,11 @@ function App() {
               <h1 className="text-[#61794a]/70 text-xl sm:text-2xl font-bold text-center">
                 Seu orçamento final: R$ {result},00
               </h1>
+              {metragemResult !== 0 && (
+                <h1 className="text-[#61794a]/70 text-xl sm:text-2xl font-bold text-center">
+                  Metragem aproximada do projeto: {metragemResult} m²
+                </h1>
+              )}
               <p className="text-[#61794a]/70 text-md sm:text-lg font-semibold capitalize"></p>
             </div>
             <a
