@@ -1060,7 +1060,7 @@ function App() {
     <div
       className="w-full min-h-screen flex flex-col justify-center items-center"
       style={{
-        backgroundImage: 'url("./image1.jpg")',
+        backgroundImage: 'url("./image1.webp")',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: 'top'
