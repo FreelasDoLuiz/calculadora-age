@@ -36,11 +36,11 @@ const formatPhoneNumber = (phone) => {
   return phone
 }
 
-// const encode = (data) => {
-//   return Object.keys(data)
-//     .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-//     .join('&')
-// }
+const encode = (data) => {
+  return Object.keys(data)
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+    .join('&')
+}
 
 const InfoDataSchema = z.object({
   whatsapp: z.string().refine(validatePhoneNumber, {
@@ -308,23 +308,23 @@ function App() {
     }
     setResult(result)
 
-    // const encodedData = encode({
-    //   'form-name': 'contact',
-    //   nome: infoData.nome,
-    //   name: infoData.nome,
-    //   email: infoData.email,
-    //   message: message
-    // })
+    const encodedData = encode({
+      'form-name': 'contact',
+      nome: infoData.nome,
+      name: infoData.nome,
+      email: infoData.email,
+      message: message
+    })
     try {
-      // const response = await fetch('/', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      //   body: encodedData
-      // })
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodedData
+      })
 
-      // if (response.status !== 200) {
-      //   setSubmitError(true)
-      // }
+      if (response.status !== 200) {
+        setSubmitError(true)
+      }
       console.log(message)
     } catch (err) {
       setSubmitError(true)
@@ -1040,7 +1040,7 @@ function App() {
               <p className="text-[#61794a]/70 text-md sm:text-lg font-semibold capitalize"></p>
             </div>
             <a
-              href="https://wa.me/5561982104088?text=Ol%C3%A1!%20Preenchi%20a%20calculadora%20de%20or%C3%A7amento%20da%20Pen%C3%ADnsula%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20"
+              href="https://api.whatsapp.com/send?phone=5561996592994&text=Ol%C3%A1,%20Gostaria%20de%20saber%20mais%20sobre%20projetos%20e%20execu%C3%A7%C3%A3o%20de%20obra"
               target="_blank"
               className="text-white font-semibold bg-[#61794a] p-5 rounded-md scale-95 hover:scale-100 transition-all"
             >
